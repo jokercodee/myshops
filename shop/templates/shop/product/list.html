@@ -1,0 +1,98 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+	{% if category %}{{ category.name }}{% else %}Products{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-0">
+  <div class="row mt-0">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+			<li class="nav-item">
+	        <a class="nav-link {% if not category %}active{% endif %}" href="{% url 'shop:product_list' %}">
+				<svg class="bi bi-house-door "width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+				  <path fill-rule="evenodd" d="M7.646 1.146a.5.5 0 01.708 0l6 6a.5.5 0 01.146.354v7a.5.5 0 01-.5.5H9.5a.5.5 0 01-.5-.5v-4H7v4a.5.5 0 01-.5.5H2a.5.5 0 01-.5-.5v-7a.5.5 0 01.146-.354l6-6zM2.5 7.707V14H6v-4a.5.5 0 01.5-.5h3a.5.5 0 01.5.5v4h3.5V7.707L8 2.207l-5.5 5.5z" clip-rule="evenodd"/>
+				  <path fill-rule="evenodd" d="M13 2.5V6l-2-2V2.5a.5.5 0 01.5-.5h1a.5.5 0 01.5.5z" clip-rule="evenodd"/>
+				</svg>
+				<span data-feather="home" style="display: inline-block;">Home</span>
+	        </a>
+	      </li>
+		{% for c in categories %}
+          <li class="nav-item">
+            <a class="nav-link
+						{% if category.slug == c.slug %}active{% endif %}" href="{{ c.get_absolute_url }}">
+						<svg class="bi bi-cursor" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+						  <path fill-rule="evenodd" d="M14.082 2.182a.5.5 0 01.103.557L8.528 15.467a.5.5 0 01-.917-.007L5.57 10.694.803 8.652a.5.5 0 01-.006-.916l12.728-5.657a.5.5 0 01.556.103zM2.25 8.184l3.897 1.67a.5.5 0 01.262.263l1.67 3.897L12.743 3.52 2.25 8.184z" clip-rule="evenodd"/>
+						</svg>
+              <span data-feather="home"></span>
+              {{ c.name }} <span class="sr-only">(current)</span>
+            </a>
+          </li>
+		{% endfor %}
+        </ul>
+      </div>
+    </nav>
+</div>
+
+	<main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+        <h1 class="h2 ml-2">{% if category %}{{ category.name }}{% else %}All Products{% endif %}</h1>
+			<div class="container">
+  				<div class="row">
+				  {% for product in products %}
+				  <div class="col-md-6 col-sm-6 col-lg-4">
+				  <a href="{{ product.get_absolute_url }}">
+		          <div class="card mb-4 shadow-sm">
+	              <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" class='thumbnail' width="100%" height="225" slice focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect>
+	              <div class="card-body">
+	              <p id="product-name" class="line-clamp go card-text">{{ product.name|truncatewords:7 }}</p>
+	              	<div class="d-flex justify-content-between align-items-center">
+	                	<div class="btn-group-sm">
+		                  <span class="h6 text-dark">
+		                  	&#8377;{{ product.price|intcomma }}</span>
+		                  <!-- <button type="button" 
+		                  class="btn btn-sm btn-outline-{% if product.available %}success{% else %}danger{% endif %}">
+		                  	{% if product.available %}Instock{% else %}Coming Soon{% endif %}
+		                  </button> -->
+		                </div>
+		                <button type="button" 
+		                  class="btn btn-sm btn-outline-{% if product.available %}success{% else %}danger{% endif %}">
+		                  	{% if product.available %}Instock{% else %}Coming Soon{% endif %}
+		                  </button>
+	              	</div>
+	              </div>
+		          </div>
+				  </a>
+      		  </div>
+			  {% endfor %}
+      		</div>
+      		{% if products.has_other_pages %}
+      		<ul class="pagination">
+      			{% if products.has_previous %}
+      			  <li class="page-item"><a class="page-link" href="?page={{ products.previous_page_number}}">&laquo;</a></li>
+  			    {% else %}
+  			      <li class="page-item"><span class="page-link">&laquo;</span></li>
+		      	{% endif %}
+
+		      	{% for i in products.paginator.page_range %}
+		      	  {% if products.number == i %}
+		      	    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+		      	  {% else %}
+		      	    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+		      	  {% endif %}
+	      	    {% endfor %}
+
+	      	    {% if products.has_next %}
+	      	      <li class="page-item"><a class="page-link" href="?page={{ products.next_page_number }}">&raquo;</a></li>
+      	        {% else %}
+      	          <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+  	            {% endif %}
+      		</ul>
+      		{% endif %}
+		</div>
+	</main>
+</div>
+{% endblock %}
+

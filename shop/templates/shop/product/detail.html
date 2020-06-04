@@ -1,0 +1,124 @@
+{% load static %}
+{% load humanize %}
+{% load custom_tags %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+		<meta name="author" content="Kavin Karthik,Basically Very Tough to edit this.">
+    <meta name="generator" content="Jekyll v4.0.1">
+    <title>{% block title %}{{ product.name }}{% endblock %}</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
+
+    <!-- Bootstrap core CSS -->
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+<link href="{% static 'css/base.css' %}" rel="stylesheet">
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+			.bg-dark {
+			  background-color: #343a40!important;
+			}
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet">
+  </head>
+
+<div class="bg-dark pos-f-t">
+  <div class="collapse" id="navbarToggleExternalContent">
+    <h1 class="h3 ml-1 text-light">All Category</h1>
+    <div class="bg-dark p-6 mr-5 d-flex align-items-center">
+			<div class="container">
+        {% for c in categories %}
+  			<ul class="nav mt-1 md-2">
+  				<li class="nav-item">
+  					<span class="d-flex align-items-start">
+  						<a class="item-nav" href="{{ c.get_absolute_url }}">
+  							<span data-feather="home">{{ c.name }}</span>
+  						</a>
+  					</span>
+  				</li>
+  			</ul>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <nav class="navbar navbar-light sticky-top bg-light flex-md-nowrap p-0 shadow">
+    <a class="second-logo px-3 m-2" href="{% url 'shop:product_list' %}">
+    <img src="{% static 'img/boxit_logo.svg' %}" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+    <span class="second-logo"></span>
+    </a>
+    <ul class="navbar-nav m-2">
+      <li class="nav-item">
+        <span>
+          {% with total_items=cart|length %}
+               {% if total_items > 0 %}
+                <a class="text-decoration-none" href="{% url 'cart:cart_detail' %}">
+                  <span class="text-dark">{{ total_items }}</span>
+                  <svg class="bi bi-bag-fill" width="1em" height="1em" viewBox="0 0 16 16" fill="#0094FF" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 4h14v10a2 2 0 01-2 2H3a2 2 0 01-2-2V4zm7-2.5A2.5 2.5 0 005.5 4h-1a3.5 3.5 0 117 0h-1A2.5 2.5 0 008 1.5z"/>
+                  </svg>
+                </a>
+              {% else %}
+                 <span class="text-light">Empty</span>
+                {% endif %}
+
+          {% endwith %}
+        </span>
+      </li>
+    </ul>
+    <button class="navbar-toggler col-xs-3" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </nav>
+</div>
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-4 order-md-1 mb-4">
+      <div class="pic mb-2">
+          <img class="cover mw-100" src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}">
+      </div>
+        <h4 class="d-flex mb-3">
+          <span class="text-dark">Category: <a href="{{ product.category.get_absolute_url }}">{{ product.category }}</a>
+          <p class="price text-dark mt-2">&#8377;{{ product.price }}</p>
+          </span>
+        </h4>
+        <form class="buy text-dark form-group" action="{% url 'cart:cart_add' product.id %}" method="POST">
+          {{ cart_product_form }}
+          {% csrf_token %}
+          <button class="form-control btn btn-primary" type="submit">Buy Now</button>
+        </form>
+    </div>
+    <div class="col-md-8 order-md-2">
+      <h4 class="mb-3">Product Overview</h4>
+      <div class="text-justify">
+        <p style="color: black;">{{ product.description|markdown }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery-3.4.1.slim.min.js' %}"></script>
+<script src="{% static 'js/dashboard.js' %}"></script>
+</html>

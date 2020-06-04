@@ -1,0 +1,22 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+Thank You
+{% endblock %}
+
+{% block content %}
+
+<h1>Thankyou</h1>
+<p>Your order has been successfully placed.Your order number is <strong>ID-status{{ order.id }}-
+<span id="year"><p></p></span>
+</strong></p>
+
+{% endblock %}
+
+<script type="text/javascript">
+	var date = new Date();
+	var full_year = date.getFullYear();
+
+	var el = document.getElementById("year");
+	el.textContent = full_year;
+</script>
